@@ -1,0 +1,295 @@
+[debug] [2025-09-08T07:21:46.141Z] ----------------------------------------------------------------------
+[debug] [2025-09-08T07:21:46.144Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/ddncjx4vr7n8ighdsnmviznfzlpb3d54-firebase-tools-14.15.1/lib/node_modules/firebase-tools/lib/bin/firebase.js deploy --only hosting
+[debug] [2025-09-08T07:21:46.145Z] CLI Version:   14.15.1
+[debug] [2025-09-08T07:21:46.145Z] Platform:      linux
+[debug] [2025-09-08T07:21:46.145Z] Node Version:  v20.19.1
+[debug] [2025-09-08T07:21:46.146Z] Time:          Mon Sep 08 2025 07:21:46 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-09-08T07:21:46.146Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-08T07:21:46.686Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:46.687Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:46.692Z] >>> [apiv2][query] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 [none]
+[debug] [2025-09-08T07:21:47.497Z] <<< [apiv2][status] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 200
+[debug] [2025-09-08T07:21:47.498Z] <<< [apiv2][body] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 {"workspaceId":"chat-19243296","name":"chat","workspaceRedirectUrl":"firebase-chat-1757312779914.cluster-64pjnskmlbaxowh5lzq6i7v4ra.cloudworkstations.dev","status":"WORKSPACE_STATUS_RUNNING","lastAccessDatetime":"2025-09-08T06:28:17.961065Z","workspaceTemplate":"WORKSPACE_TEMPLATE_BLANK_WEB","owner":"SELF","serviceAccountEmail":"msp-2475610068833983043@monospace-362420.iam.gserviceaccount.com","enableNix":true,"ownerEmail":"menja.herizo@gmail.com","workspaceImageUrl":"https://www.gstatic.com/monospace/231115/logo_nextjs.svg","templateArgs":"{\"language\":\"ts\",\"srcDir\":true,\"eslint\":true,\"app\":true,\"tailwind\":true,\"__agentic_workspace\":true}","templateRepoUrl":"file:///usr/local/monospace/templates/public/nextjs","workstationAccessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Nsb3VkLmdvb2dsZS5jb20vd29ya3N0YXRpb25zIiwiYXVkIjoiZmlyZWJhc2UtY2hhdC0xNzU3MzEyNzc5OTE0LmNsdXN0ZXItNjRwam5za21sYmF4b3doNWx6cTZpN3Y0cmEuY2xvdWR3b3Jrc3RhdGlvbnMuZGV2IiwiaWF0IjoxNzU3MzE2MTA3LCJleHAiOjE3NTc0MDI1MDd9.NX6MeGpJ0P2my6AUVpVeFxcwCpOvY2aQlu_2uZO6lV05KFKFeZ1IzhhnZFJ4vUqf-ZXeGdWj7vgjDufoPPTXMIRORoPmM_Bfb3P7xWzsZAVava_aAEJ_b_WFgrIB_TYF4wv_mbCilHacahR2SM6eK7DgBkXikmSNS_hwSxnZNKqGY0GsNrAz_yCu1uoS-E_fQlxSJ3ClVNLwkKDVjAMn5K53OlK_XpA_Xu7PTYjlm6iNIqFtd-ReXCwjcS0WnsbFAc9dhDsM_N43Pw1uhTEnK26dsV3RnCKmewfMl2FJ_o3OUOKC3gngWC2akZREd71t57VObLvc8kH4h3YwPUInZg"}
+[info] Updating Studio Workspace active project to match Firebase CLI 'only-texto'
+[debug] [2025-09-08T07:21:47.499Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:47.502Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:47.503Z] >>> [apiv2][query] PATCH https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 updateMask=workspace.firebaseProjectId
+[debug] [2025-09-08T07:21:47.503Z] >>> [apiv2][body] PATCH https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 {"firebaseProjectId":"only-texto"}
+[debug] [2025-09-08T07:21:48.030Z] <<< [apiv2][status] PATCH https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 200
+[debug] [2025-09-08T07:21:48.031Z] <<< [apiv2][body] PATCH https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 {"workspaceId":"chat-19243296","name":"chat","workspaceRedirectUrl":"firebase-chat-1757312779914.cluster-64pjnskmlbaxowh5lzq6i7v4ra.cloudworkstations.dev","status":"WORKSPACE_STATUS_RUNNING","lastAccessDatetime":"2025-09-08T06:28:17.961065Z","workspaceTemplate":"WORKSPACE_TEMPLATE_BLANK_WEB","serviceAccountEmail":"msp-2475610068833983043@monospace-362420.iam.gserviceaccount.com","enableNix":true,"workspaceImageUrl":"https://www.gstatic.com/monospace/231115/logo_nextjs.svg","templateArgs":"{\"language\":\"ts\",\"srcDir\":true,\"eslint\":true,\"app\":true,\"tailwind\":true,\"__agentic_workspace\":true}","templateRepoUrl":"file:///usr/local/monospace/templates/public/nextjs","firebaseProjectId":"only-texto"}
+[debug] [2025-09-08T07:21:48.044Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-09-08T07:21:48.045Z] > authorizing via signed-in user (menja.herizo@gmail.com)
+[debug] [2025-09-08T07:21:48.045Z] [iam] checking project only-texto for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-09-08T07:21:48.045Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:48.046Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:48.046Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions [none]
+[debug] [2025-09-08T07:21:48.046Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions x-goog-quota-user=projects/only-texto
+[debug] [2025-09-08T07:21:48.046Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:21:48.644Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions 200
+[debug] [2025-09-08T07:21:48.644Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:21:48.645Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:48.646Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:48.646Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/only-texto [none]
+[debug] [2025-09-08T07:21:48.865Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/only-texto 200
+[debug] [2025-09-08T07:21:48.865Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/only-texto {"projectId":"only-texto","projectNumber":"998617720537","displayName":"only-texto","name":"projects/only-texto","resources":{"hostingSite":"only-texto"},"state":"ACTIVE","etag":"1_e975956b-3115-4278-a0ca-2c38b6476010"}
+[debug] [2025-09-08T07:21:51.292Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:51.292Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:51.293Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites pageToken=&pageSize=10
+[debug] [2025-09-08T07:21:52.133Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites 200
+[debug] [2025-09-08T07:21:52.133Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites {"sites":[{"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2025-09-08T07:21:52.135Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:52.135Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:52.135Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites 
+[debug] [2025-09-08T07:21:52.383Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites 200
+[debug] [2025-09-08T07:21:52.383Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites {"sites":[{"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2025-09-08T07:21:52.384Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:52.384Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:21:52.384Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps/-/config [none]
+[debug] [2025-09-08T07:21:52.782Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps/-/config 200
+[debug] [2025-09-08T07:21:52.783Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps/-/config {"projectId":"only-texto","storageBucket":"only-texto.firebasestorage.app","apiKey":"AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU","authDomain":"only-texto.firebaseapp.com","messagingSenderId":"998617720537"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-09-08T07:22:00.607Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:22:00.609Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:22:00.612Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto [none]
+[debug] [2025-09-08T07:22:01.381Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto 200
+[debug] [2025-09-08T07:22:01.381Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto {"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.5.2
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] Failed to compile.
+
+
+[info] ./src/app/actions.ts
+Module not found: Can't resolve '@/lib/db'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Fuser%2Fchat%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fserver-actions.js%22%2C%5B%7B%22id%22%3A%227fb31af1040b1af0b55544b0059be565a0204a3918%22%2C%22exportedName%22%3A%22invalidateCacheAction%22%2C%22filename%22%3A%22..%2Fnode_modules%2F%40clerk%2Fnextjs%2Fdist%2Fesm%2Fapp-router%2Fserver-actions.js%22%7D%5D%5D%2C%5B%22%2Fhome%2Fuser%2Fchat%2Fsrc%2Fapp%2Factions.ts%22%2C%5B%7B%22id%22%3A%22400bc4f2f51cd67135045ee29f9caef9e331a4ab47%22%2C%22exportedName%22%3A%22createConversation%22%2C%22filename%22%3A%22app%2Factions.ts%22%7D%2C%7B%22id%22%3A%22605e9b06b16451025c5eff3386bf6ef663b608ccaa%22%2C%22exportedName%22%3A%22updateTypingStatus%22%2C%22filename%22%3A%22app%2Factions.ts%22%7D%2C%7B%22id%22%3A%2260a5d6642fd46120becc344294cf10945f79d613f4%22%2C%22exportedName%22%3A%22sendMessage%22%2C%22filename%22%3A%22app%2Factions.ts%22%7D%5D%5D%5D&__client_imported__=true!
+
+./src/app/api/conversations/[conversationId]/messages/route.ts
+Module not found: Can't resolve '@/lib/db'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/api/conversations/route.ts
+Module not found: Can't resolve '@/lib/db'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/tip/success/page.tsx
+Error:   x Expected ',', got ';'
+    ,-[/home/user/chat/src/app/tip/success/page.tsx:9:1]
+  6 | const TipSuccessPage = () => {
+  7 |   const router = useRouter();
+  8 |   const searchParams = useSearchParams();
+  9 |   const sessionId = searchParams.get('session_id';
+    :                                                  ^
+ 10 |   const [loading, setLoading] = useState(true);
+ 11 | 
+ 12 |   useEffect(() => {
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/tip/success/page.tsx
+
+
+[info] 
+
+[info] > Build failed because of webpack errors
+
+[debug] [2025-09-08T07:22:46.146Z] Error: ENOENT: no such file or directory, open '/home/user/chat/.next/server/middleware-manifest.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-09-08T07:28:32.636Z] ----------------------------------------------------------------------
+[debug] [2025-09-08T07:28:32.641Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/ddncjx4vr7n8ighdsnmviznfzlpb3d54-firebase-tools-14.15.1/lib/node_modules/firebase-tools/lib/bin/firebase.js deploy --only hosting
+[debug] [2025-09-08T07:28:32.642Z] CLI Version:   14.15.1
+[debug] [2025-09-08T07:28:32.642Z] Platform:      linux
+[debug] [2025-09-08T07:28:32.643Z] Node Version:  v20.19.1
+[debug] [2025-09-08T07:28:32.643Z] Time:          Mon Sep 08 2025 07:28:32 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-09-08T07:28:32.643Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-08T07:28:33.219Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:33.220Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:33.225Z] >>> [apiv2][query] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 [none]
+[debug] [2025-09-08T07:28:34.068Z] <<< [apiv2][status] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 200
+[debug] [2025-09-08T07:28:34.069Z] <<< [apiv2][body] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 {"workspaceId":"chat-19243296","name":"chat","workspaceRedirectUrl":"firebase-chat-1757312779914.cluster-64pjnskmlbaxowh5lzq6i7v4ra.cloudworkstations.dev","status":"WORKSPACE_STATUS_RUNNING","lastAccessDatetime":"2025-09-08T07:21:47.923065Z","workspaceTemplate":"WORKSPACE_TEMPLATE_BLANK_WEB","owner":"SELF","serviceAccountEmail":"msp-2475610068833983043@monospace-362420.iam.gserviceaccount.com","enableNix":true,"ownerEmail":"menja.herizo@gmail.com","workspaceImageUrl":"https://www.gstatic.com/monospace/231115/logo_nextjs.svg","templateArgs":"{\"language\":\"ts\",\"srcDir\":true,\"eslint\":true,\"app\":true,\"tailwind\":true,\"__agentic_workspace\":true}","templateRepoUrl":"file:///usr/local/monospace/templates/public/nextjs","workstationAccessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Nsb3VkLmdvb2dsZS5jb20vd29ya3N0YXRpb25zIiwiYXVkIjoiZmlyZWJhc2UtY2hhdC0xNzU3MzEyNzc5OTE0LmNsdXN0ZXItNjRwam5za21sYmF4b3doNWx6cTZpN3Y0cmEuY2xvdWR3b3Jrc3RhdGlvbnMuZGV2IiwiaWF0IjoxNzU3MzE2NTEzLCJleHAiOjE3NTc0MDI5MTN9.gI3iG07OvCcoseymFWySlzJvc0kl02sy4HR0lYumhzYqSKPpRuZ91iaFhRPLk4HmfrEwhpZN6Jqo-R2rcpcSEV1Qm6ThrEw_ST2Q_qbXX6f9BygEtWb-IK34Z_ViEXyzUTqPN5H4E2Ad2LWd_2q8hO3NqB4A1Yb4eqSd7z0aFLCrWXcfjGo9Nq1Vm6_3UmEX0dd1Sd-HFNA3rU8zLddGl4afLL3xYE67W3CMLfUmgRel6fghIO0rWmhg4X4nUyBw7_37jnfgMaInZpYn3bW8D0ucdaWO427zEAcp6E9bv_cpeOwxBg2OxyhShf-VaafXXhFjK_PhAYDlbhci-lSVng","firebaseProjectId":"only-texto"}
+[debug] [2025-09-08T07:28:34.074Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-09-08T07:28:34.074Z] > authorizing via signed-in user (menja.herizo@gmail.com)
+[debug] [2025-09-08T07:28:34.074Z] [iam] checking project only-texto for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-09-08T07:28:34.077Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:34.078Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:34.078Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions [none]
+[debug] [2025-09-08T07:28:34.078Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions x-goog-quota-user=projects/only-texto
+[debug] [2025-09-08T07:28:34.078Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:28:34.712Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions 200
+[debug] [2025-09-08T07:28:34.712Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:28:34.714Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:34.715Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:34.715Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/only-texto [none]
+[debug] [2025-09-08T07:28:34.945Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/only-texto 200
+[debug] [2025-09-08T07:28:34.945Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/only-texto {"projectId":"only-texto","projectNumber":"998617720537","displayName":"only-texto","name":"projects/only-texto","resources":{"hostingSite":"only-texto"},"state":"ACTIVE","etag":"1_25cbf3ba-a865-4266-b9ec-0834fddf4823"}
+[debug] [2025-09-08T07:28:37.376Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:37.376Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:37.377Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites pageToken=&pageSize=10
+[debug] [2025-09-08T07:28:38.209Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites 200
+[debug] [2025-09-08T07:28:38.209Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites {"sites":[{"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","appId":"1:998617720537:web:92e952a78d9fa575d600c8","type":"DEFAULT_SITE"}]}
+[debug] [2025-09-08T07:28:38.211Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:38.211Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:38.211Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config [none]
+[debug] [2025-09-08T07:28:38.886Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config 200
+[debug] [2025-09-08T07:28:38.886Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config {"projectId":"only-texto","appId":"1:998617720537:web:92e952a78d9fa575d600c8","storageBucket":"only-texto.firebasestorage.app","apiKey":"AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU","authDomain":"only-texto.firebaseapp.com","messagingSenderId":"998617720537"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-09-08T07:28:47.378Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:47.379Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:28:47.379Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto [none]
+[debug] [2025-09-08T07:28:48.148Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto 200
+[debug] [2025-09-08T07:28:48.152Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto {"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","appId":"1:998617720537:web:92e952a78d9fa575d600c8","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.5.2
+
+[info]    - Environments: .env.local
+
+
+[info]    Creating an optimized production build ...
+
+[info] <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (172kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+
+[info]  ✓ Compiled successfully in 48s
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+Failed to compile.
+
+[info] 
+./src/app/api/conversations/[conversationId]/messages/route.ts
+4:14  Warning: 'and' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/chat/page.tsx
+36:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+84:6  Warning: React Hook useEffect has a missing dependency: 'fetchConversations'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+132:55  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+180:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/page.tsx
+14:59  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+
+[debug] [2025-09-08T07:29:59.153Z] Error: ENOENT: no such file or directory, open '/home/user/chat/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-09-08T07:31:02.195Z] ----------------------------------------------------------------------
+[debug] [2025-09-08T07:31:02.198Z] Command:       /nix/store/ws50yvm6vzlzf7jzz6n7xh4szddrack1-nodejs-20.19.1/bin/node /nix/store/ddncjx4vr7n8ighdsnmviznfzlpb3d54-firebase-tools-14.15.1/lib/node_modules/firebase-tools/lib/bin/firebase.js deploy --only hosting
+[debug] [2025-09-08T07:31:02.198Z] CLI Version:   14.15.1
+[debug] [2025-09-08T07:31:02.199Z] Platform:      linux
+[debug] [2025-09-08T07:31:02.199Z] Node Version:  v20.19.1
+[debug] [2025-09-08T07:31:02.199Z] Time:          Mon Sep 08 2025 07:31:02 GMT+0000 (Coordinated Universal Time)
+[debug] [2025-09-08T07:31:02.199Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-08T07:31:02.684Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:02.684Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:02.689Z] >>> [apiv2][query] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 [none]
+[debug] [2025-09-08T07:31:03.487Z] <<< [apiv2][status] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 200
+[debug] [2025-09-08T07:31:03.488Z] <<< [apiv2][body] GET https://monospace-pa.googleapis.com/v1/workspaces/chat-19243296 {"workspaceId":"chat-19243296","name":"chat","workspaceRedirectUrl":"firebase-chat-1757312779914.cluster-64pjnskmlbaxowh5lzq6i7v4ra.cloudworkstations.dev","status":"WORKSPACE_STATUS_RUNNING","lastAccessDatetime":"2025-09-08T07:21:47.923065Z","workspaceTemplate":"WORKSPACE_TEMPLATE_BLANK_WEB","owner":"SELF","serviceAccountEmail":"msp-2475610068833983043@monospace-362420.iam.gserviceaccount.com","enableNix":true,"ownerEmail":"menja.herizo@gmail.com","workspaceImageUrl":"https://www.gstatic.com/monospace/231115/logo_nextjs.svg","templateArgs":"{\"language\":\"ts\",\"srcDir\":true,\"eslint\":true,\"app\":true,\"tailwind\":true,\"__agentic_workspace\":true}","templateRepoUrl":"file:///usr/local/monospace/templates/public/nextjs","workstationAccessToken":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Nsb3VkLmdvb2dsZS5jb20vd29ya3N0YXRpb25zIiwiYXVkIjoiZmlyZWJhc2UtY2hhdC0xNzU3MzEyNzc5OTE0LmNsdXN0ZXItNjRwam5za21sYmF4b3doNWx6cTZpN3Y0cmEuY2xvdWR3b3Jrc3RhdGlvbnMuZGV2IiwiaWF0IjoxNzU3MzE2NjYzLCJleHAiOjE3NTc0MDMwNjN9.KJ5SGG1-3iyxD1q7DPxrJD_cqkzuZM0HGPQliKJndvvWnML6_CSpdDKA7Mg9JySPBZIivG7o6CWgpvtirPr3IhOVOhMSmP8qMcSyKGYyPwUg8G2BTcndEpJ38q2S9D4oNK6Kt_6uSn3rZBXAfwd3gl-rp5Z23nQBWM2jTUs7EKr6xSg_MkqgYc-0je1T8-cdSGrhhaUZNHYn3f8KrzYcAk2tAuxuUzXnSh-RojqDfc-6egmli9R3WGFy8v0438FdjNUl7nvMCVH_cPGi9f-lFcShIYLGwDkc2k5KLhF6HpoAkdSHwSDKEK2Om0WcWxzJrM8zS0UEgUijdNEU8r1D1g","firebaseProjectId":"only-texto"}
+[debug] [2025-09-08T07:31:03.491Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-09-08T07:31:03.492Z] > authorizing via signed-in user (menja.herizo@gmail.com)
+[debug] [2025-09-08T07:31:03.492Z] [iam] checking project only-texto for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-09-08T07:31:03.493Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:03.493Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:03.493Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions [none]
+[debug] [2025-09-08T07:31:03.494Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions x-goog-quota-user=projects/only-texto
+[debug] [2025-09-08T07:31:03.494Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:31:04.109Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions 200
+[debug] [2025-09-08T07:31:04.109Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/only-texto:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2025-09-08T07:31:04.111Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:04.112Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:04.112Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/only-texto [none]
+[debug] [2025-09-08T07:31:04.299Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/only-texto 200
+[debug] [2025-09-08T07:31:04.299Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/only-texto {"projectId":"only-texto","projectNumber":"998617720537","displayName":"only-texto","name":"projects/only-texto","resources":{"hostingSite":"only-texto"},"state":"ACTIVE","etag":"1_25cbf3ba-a865-4266-b9ec-0834fddf4823"}
+[debug] [2025-09-08T07:31:06.476Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:06.476Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:06.477Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites pageToken=&pageSize=10
+[debug] [2025-09-08T07:31:07.298Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites 200
+[debug] [2025-09-08T07:31:07.298Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites {"sites":[{"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","appId":"1:998617720537:web:92e952a78d9fa575d600c8","type":"DEFAULT_SITE"}]}
+[debug] [2025-09-08T07:31:07.299Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:07.299Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:07.301Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config [none]
+[debug] [2025-09-08T07:31:08.140Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config 200
+[debug] [2025-09-08T07:31:08.140Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:92e952a78d9fa575d600c8/config {"projectId":"only-texto","appId":"1:998617720537:web:92e952a78d9fa575d600c8","storageBucket":"only-texto.firebasestorage.app","apiKey":"AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU","authDomain":"only-texto.firebaseapp.com","messagingSenderId":"998617720537"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2025-09-08T07:31:17.390Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:17.395Z] Checked if tokens are valid: true, expires at: 1757319377902
+[debug] [2025-09-08T07:31:17.395Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto [none]
+[debug] [2025-09-08T07:31:18.164Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto 200
+[debug] [2025-09-08T07:31:18.164Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/only-texto/sites/only-texto {"name":"projects/only-texto/sites/only-texto","defaultUrl":"https://only-texto.web.app","appId":"1:998617720537:web:92e952a78d9fa575d600c8","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 15.5.2
+
+[info]    - Environments: .env.local, .env
+
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully in 14.1s
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+Failed to compile.
+
+[info] 
+./src/app/api/conversations/[conversationId]/messages/route.ts
+4:14  Warning: 'and' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/chat/page.tsx
+36:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+84:6  Warning: React Hook useEffect has a missing dependency: 'fetchConversations'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+132:55  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+180:16  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/page.tsx
+14:59  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+
+[debug] [2025-09-08T07:31:50.867Z] Error: ENOENT: no such file or directory, open '/home/user/chat/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
