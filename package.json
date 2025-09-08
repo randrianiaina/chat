@@ -6,14 +6,16 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx tsx src/lib/db/migrate.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.9",
     "@neondatabase/serverless": "^1.0.1",
     "@stripe/stripe-js": "^7.9.0",
+    "drizzle-kit": "^0.23.0",
     "date-fns": "^4.1.0",
-    "drizzle-kit": "^0.18.1",
     "drizzle-orm": "^0.44.5",
     "emoji-picker-react": "^4.13.3",
     "firebase": "^12.2.1",

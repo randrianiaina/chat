@@ -1,6 +1,7 @@
-import { pgTable, serial, text, timestamp, pgEnum, integer } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, pgEnum, integer, varchar } from 'drizzle-orm/pg-core';
 
 export const userRole = pgEnum('role', ['ADMIN', 'MODERATOR', 'CLIENT']);
+export const itemStatus = pgEnum('status', ['pending', 'approved', 'rejected']);
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -28,4 +29,15 @@ export const messages = pgTable('messages', {
 export const conversationParticipants = pgTable('conversation_participants', {
   conversationId: integer('conversationId').references(() => conversations.id),
   userId: integer('userId').references(() => users.id),
+});
+
+export const portfolioItems = pgTable('portfolio_items', {
+    id: serial('id').primaryKey(),
+    title: varchar('title', { length: 256 }).notNull(),
+    description: text('description').notNull(),
+    imageUrl: text('imageUrl'),
+    projectUrl: text('projectUrl'),
+    status: itemStatus('status').default('pending').notNull(),
+    userId: integer('userId').references(() => users.id),
+    createdAt: timestamp('createdAt').defaultNow(),
 });
