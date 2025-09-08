@@ -1,20 +1,31 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU",
-  authDomain: "only-texto.firebaseapp.com",
-  projectId: "only-texto",
-  storageBucket: "only-texto.firebasestorage.app",
-  messagingSenderId: "998617720537",
-  appId: "1:998617720537:web:3337ca415d20dc43d600c8",
-  databaseURL: "https://only-texto.firebaseio.com"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 };
 
-const app = initializeApp(firebaseConfig);
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
+
 const db = getFirestore(app);
 const rtdb = getDatabase(app);
 
-export { db, rtdb };
+const sql = neon(process.env.POSTGRES_URL!);
+const dbDrizzle = drizzle(sql);
+
+export { db, rtdb, dbDrizzle as db };

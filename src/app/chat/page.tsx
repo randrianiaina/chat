@@ -1,77 +1,63 @@
 'use client';
 
-import React, { useEffect, useState, useTransition, useRef } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction, updateMessage, deleteMessage } from '../actions';
-import { collection, onSnapshot, query, where, orderBy, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, orderBy, serverTimestamp, set, ref, onDisconnect } from 'firebase/firestore';
 import { db, rtdb } from '@/lib/firebase';
-import { ref, onValue, onDisconnect, set, serverTimestamp } from 'firebase/database';
-import { loadStripe } from '@stripe/stripe-js';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
-
-interface Conversation {
-  id: number;
-  name: string;
-  createdAt: string;
-  creatorId: string;
-}
+import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction, updateMessage, deleteMessage } from '@/app/actions';
+import { format } from 'date-fns';
+import { MdSend, MdAdd, MdMoreVert, MdCheck, MdDelete } from 'react-icons/md';
+import { FaSmile } from 'react-icons/fa';
 
 interface Message {
   id: string;
   content: string;
-  createdAt: string;
+  createdAt: any;
   authorName: string;
   authorEmail: string;
   authorClerkId: string;
 }
 
-interface Reaction {
-    [emoji: string]: {
-        count: number;
-        users: { [clerkId: string]: string };
-    };
-}
-
-interface TypingUser {
+interface Conversation {
+  id: number;
   name: string;
+  createdAt: string;
 }
 
-interface Presence {
-    [key: string]: {
-        online: boolean;
-        lastActive: any;
-    };
+interface TypingStatus {
+  [clerkId: string]: {
+    name: string;
+    timestamp: any;
+  };
+}
+
+interface Reactions {
+  [emoji: string]: {
+    count: number;
+    users: { [clerkId: string]: string };
+  };
 }
 
 const ChatPage = () => {
   const { user } = useUser();
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [messagesLoading, setMessagesLoading] = useState(false);
-  const [messagesError, setMessagesError] = useState<string | null>(null);
-  const [reactions, setReactions] = useState<{ [messageId: string]: Reaction }>({});
-
   const [newMessage, setNewMessage] = useState('');
-  const [isPending, startTransition] = useTransition();
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showCreateConversation, setShowCreateConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   const [createConversationError, setCreateConversationError] = useState<string | null>(null);
+  const [typingStatus, setTypingStatus] = useState<TypingStatus>({});
+  const [reactions, setReactions] = useState<{ [messageId: string]: Reactions }>({});
+  const [editingMessage, setEditingMessage] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState('');
+  const [presence, setPresence] = useState<any>({});
 
-  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const [presence, setPresence] = useState<Presence>({});
-  const [tipping, setTipping] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null);
-  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
-  const [editingContent, setEditingContent] = useState('');
 
   const fetchConversations = async () => {
     try {
@@ -84,7 +70,7 @@ const ChatPage = () => {
       if (data.length > 0 && !selectedConversation) {
         setSelectedConversation(data[0].id);
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
@@ -115,79 +101,68 @@ const ChatPage = () => {
   }, [user]);
 
   useEffect(() => {
-    if (selectedConversation === null) return;
+    if (!selectedConversation) return;
 
-    setMessagesLoading(true);
-    const messagesQuery = query(
-      collection(db, "messages"),
-      where("conversationId", "==", selectedConversation),
-      orderBy("createdAt", "asc")
-    );
-
-    const unsubscribeMessages = onSnapshot(messagesQuery, (querySnapshot) => {
-      const newMessages: Message[] = [];
-      const messageIds: string[] = [];
+    const q = query(collection(db, "messages"), where("conversationId", "==", selectedConversation), orderBy("createdAt"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const msgs: Message[] = [];
       querySnapshot.forEach((doc) => {
-        const message = { id: doc.id, ...doc.data() } as Message;
-        newMessages.push(message);
-        messageIds.push(message.id);
+        msgs.push({ id: doc.id, ...doc.data() } as Message);
       });
-      setMessages(newMessages);
-      setMessagesLoading(false);
+      setMessages(msgs);
+    });
 
-      if (messageIds.length > 0) {
-        const reactionsQuery = query(
-          collection(db, "reactions"),
-          where("__name__", "in", messageIds)
-        );
-
-        const unsubscribeReactions = onSnapshot(reactionsQuery, (snapshot) => {
-          const newReactions: { [messageId: string]: Reaction } = {};
-          snapshot.forEach((doc) => {
-            newReactions[doc.id] = doc.data() as Reaction;
-          });
-          setReactions(newReactions);
+    const typingRef = ref(rtdb, `typing/${selectedConversation}`);
+    const unsubscribeTyping = onSnapshot(query(collection(db, 'typing'), where('conversationId', '==', selectedConversation)), (snapshot) => {
+        const statuses: TypingStatus = {};
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            // Filter out the current user
+            if (data.clerkId !== user?.id) {
+                statuses[data.clerkId] = { name: data.name, timestamp: data.timestamp };
+            }
         });
-
-        return () => unsubscribeReactions();
-      }
-    }, (err) => {
-      console.error(err);
-      setMessagesError('Failed to subscribe to messages');
-      setMessagesLoading(false);
+        setTypingStatus(statuses);
     });
 
-    const typingDocRef = doc(db, 'typing', selectedConversation.toString());
-    const unsubscribeTyping = onSnapshot(typingDocRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        const typing = Object.values(data).map((user: any) => ({ name: user.name }));
-        setTypingUsers(typing);
-      } else {
-        setTypingUsers([]);
-      }
+    const reactionsRef = collection(db, "reactions");
+    const unsubscribeReactions = onSnapshot(reactionsRef, (snapshot) => {
+      const newReactions: { [messageId: string]: Reactions } = {};
+      snapshot.forEach((doc) => {
+        newReactions[doc.id] = doc.data() as Reactions;
+      });
+      setReactions(newReactions);
     });
-    
+
     const presenceRef = ref(rtdb, 'status');
-    const unsubscribePresence = onValue(presenceRef, (snapshot) => {
-        const data = snapshot.val();
-        setPresence(data || {});
+    const unsubscribePresence = onSnapshot(query(collection(db, 'status')), (snapshot) => {
+        const presenceData: any = {};
+        snapshot.forEach(doc => {
+            presenceData[doc.id] = doc.data();
+        });
+        setPresence(presenceData);
     });
 
     return () => {
-      unsubscribeMessages();
+      unsubscribe();
       unsubscribeTyping();
+      unsubscribeReactions();
       unsubscribePresence();
     };
-  }, [selectedConversation]);
+  }, [selectedConversation, user]);
 
-  const handleConversationSelect = (conversationId: number) => {
-    setSelectedConversation(conversationId);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleConversationSelect = (id: number) => {
+    setSelectedConversation(id);
+    setError(null);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedConversation || !newMessage.trim() || !user) return;
+    if (!newMessage.trim() || !selectedConversation) return;
 
     startTransition(async () => {
       try {
@@ -229,197 +204,152 @@ const ChatPage = () => {
     typingTimeoutRef.current = setTimeout(() => {
       updateTypingStatus(selectedConversation, false);
     }, 3000);
-  }
-
-  const handleTip = async (recipientId: string) => {
-    setTipping(true);
-    try {
-      const response = await fetch('/api/tip', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ recipientId }),
-      });
-
-      const { sessionId } = await response.json();
-      const stripe = await stripePromise;
-
-      if (stripe) {
-        await stripe.redirectToCheckout({ sessionId });
-      }
-    } catch (error) {
-      console.error('Error tipping user:', error);
-    } finally {
-      setTipping(false);
-    }
   };
-  
-  const onEmojiClick = (emojiData: EmojiClickData, messageId: string) => {
+
+  const handleReaction = (messageId: string, emoji: string) => {
     startTransition(async () => {
-        try {
-            await addReaction(messageId, emojiData.emoji);
-        } catch (error) {
-            console.error("Failed to add reaction:", error);
-        }
+      await addReaction(messageId, emoji);
     });
-    setShowEmojiPicker(null);
   };
 
   const handleUpdateMessage = (messageId: string) => {
     startTransition(async () => {
-        try {
-            await updateMessage(messageId, editingContent);
-            setEditingMessageId(null);
-            setEditingContent('');
-        } catch (error) {
-            console.error('Failed to update message:', error);
-        }
+      await updateMessage(messageId, editedContent);
+      setEditingMessage(null);
     });
   };
 
   const handleDeleteMessage = (messageId: string) => {
-    if(window.confirm('Are you sure you want to delete this message?')){
-        startTransition(async () => {
-            try {
-                await deleteMessage(messageId);
-            } catch (error) {
-                console.error('Failed to delete message:', error);
-            }
-        });
-    }
+    startTransition(async () => {
+      await deleteMessage(messageId);
+    });
   };
 
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
-      <div className="flex flex-1">
-        <aside className="w-1/4 bg-gray-800 p-4">
-          <h2 className="text-xl font-bold mb-4">Conversations</h2>
-          <button 
-            onClick={() => setShowCreateConversation(!showCreateConversation)}
-            className="w-full p-2 mb-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            New Conversation
+    <div className="flex h-screen bg-gray-900 text-white">
+      <aside className="w-1/4 bg-gray-800 p-4 overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">Conversations</h2>
+          <button onClick={() => setShowCreateConversation(!showCreateConversation)} className="p-2 rounded-full hover:bg-gray-700">
+            <MdAdd />
           </button>
-          {showCreateConversation && (
-            <form onSubmit={handleCreateConversation} className="mb-4">
-              <input
-                type="text"
-                placeholder="Conversation name"
-                value={newConversationName}
-                onChange={(e) => setNewConversationName(e.target.value)}
-                className="w-full p-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              />
-              {createConversationError && <p className="text-red-500 text-sm mt-1">{createConversationError}</p>}
-            </form>
-          )}
-          {loading && <p>Loading conversations...</p>}
-          {error && <p className="text-red-500">{error}</p>}
-          <div className="space-y-2">
-            {conversations.map((convo) => (
-              <div
-                key={convo.id}
-                className={`p-2 rounded-lg cursor-pointer ${selectedConversation === convo.id ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                onClick={() => handleConversationSelect(convo.id)}
-              >
-                <div className="flex items-center">
-                    <p className="font-semibold">{convo.name}</p>
-                    <span className={`ml-2 w-3 h-3 rounded-full ${presence[convo.creatorId] && presence[convo.creatorId].online ? 'bg-green-500' : 'bg-gray-500'}`}></span>
-                </div>
-                <p className="text-sm text-gray-400">{new Date(convo.createdAt).toLocaleTimeString()}</p>
+        </div>
+        {showCreateConversation && (
+          <form onSubmit={handleCreateConversation} className="mb-4">
+            <input
+              type="text"
+              value={newConversationName}
+              onChange={(e) => setNewConversationName(e.target.value)}
+              placeholder="New conversation name"
+              className="w-full p-2 rounded-lg bg-gray-700 focus:outline-none"
+            />
+            <button type="submit" className="w-full mt-2 p-2 rounded-lg bg-blue-600 hover:bg-blue-700" disabled={isPending}>
+              {isPending ? 'Creating...' : 'Create'}
+            </button>
+            {createConversationError && <p className="text-red-500 text-sm mt-1">{createConversationError}</p>}
+          </form>
+        )}
+        {loading && <p>Loading conversations...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        <div className="space-y-2">
+          {conversations.map((convo) => (
+            <div
+              key={convo.id}
+              className={`p-2 rounded-lg cursor-pointer ${selectedConversation === convo.id ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+              onClick={() => handleConversationSelect(convo.id)}
+            >
+              <div className="flex items-center">
+                  <p className="font-semibold">{convo.name}</p>
               </div>
-            ))}
-          </div>
-        </aside>
-        <main className="flex-1 p-4 flex flex-col">
-          <div className="flex-1 mb-4 space-y-4 overflow-y-auto">
-            {messagesLoading && <p>Loading messages...</p>}
-            {messagesError && <p className="text-red-500">{messagesError}</p>}
-            {messages.map((message) => (
-                <div key={message.id} className={`flex items-start ${message.authorEmail === user?.primaryEmailAddress?.emailAddress ? 'justify-end' : ''}`}>
-                    <div className={`${message.authorEmail === user?.primaryEmailAddress?.emailAddress ? 'bg-blue-600' : 'bg-gray-700'} p-3 rounded-lg flex flex-col`}>
-                        <div className="flex items-center">
-                            <p className="font-semibold mr-2">{message.authorName}</p>
-                            <span className={`w-2 h-2 rounded-full ${presence[message.authorClerkId] && presence[message.authorClerkId].online ? 'bg-green-500' : 'bg-gray-500'}`}></span>
-                        </div>
-                        {editingMessageId === message.id ? (
-                            <input 
-                                type="text"
-                                value={editingContent}
-                                onChange={(e) => setEditingContent(e.target.value)}
-                                onBlur={() => handleUpdateMessage(message.id)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') handleUpdateMessage(message.id);
-                                    if (e.key === 'Escape') setEditingMessageId(null);
-                                }}
-                                className="bg-gray-800 border-b border-gray-500 focus:outline-none"
-                                autoFocus
-                            />
-                        ) : (
-                            <p>{message.content}</p>
-                        )}
-                        <p className="text-xs text-gray-400 mt-1">{message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}</p>
-                        <div className="flex items-center mt-2">
-                            {reactions[message.id] && Object.entries(reactions[message.id]).map(([emoji, reaction]) => (
-                                <div key={emoji} className="flex items-center mr-2 bg-gray-600 rounded-full px-2 py-1">
-                                    <span>{emoji}</span>
-                                    <span className="text-xs ml-1">{reaction.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="relative">
-                            <button onClick={() => setShowEmojiPicker(showEmojiPicker === message.id ? null : message.id)} className="ml-2 p-1 rounded-full hover:bg-gray-600 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a.5.5 0 01.708 0 4 4 0 01-5.656 0 .5.5 0 01.708-.707 3 3 0 004.242 0 .5.5 0 010-.707z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                            {showEmojiPicker === message.id && (
-                                <div className="absolute z-10 bottom-full right-0">
-                                    <EmojiPicker onEmojiClick={(emojiData) => onEmojiClick(emojiData, message.id)} />
-                                </div>
-                            )}
-                        </div>
-                        {message.authorClerkId === user?.id && (
-                            <div className="flex items-center">
-                                <button onClick={() => { setEditingMessageId(message.id); setEditingContent(message.content); }} className="text-xs text-gray-400 hover:text-white mr-2">Edit</button>
-                                <button onClick={() => handleDeleteMessage(message.id)} className="text-xs text-red-400 hover:text-red-500">Delete</button>
+            </div>
+          ))}
+        </div>
+      </aside>
+
+      <main className="flex-1 flex flex-col">
+        {selectedConversation ? (
+          <>
+            <header className="bg-gray-800 p-4 flex items-center justify-between border-b border-gray-700">
+              <h2 className="text-xl font-bold">{conversations.find(c => c.id === selectedConversation)?.name}</h2>
+              <div className="flex items-center space-x-2">
+                {Object.entries(typingStatus).map(([id, status]) => (
+                  <p key={id} className="text-sm text-gray-400">{status.name} is typing...</p>
+                ))}
+              </div>
+            </header>
+
+            <div className="flex-1 p-4 overflow-y-auto">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div key={message.id} className={`flex ${message.authorClerkId === user.id ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-lg p-3 rounded-lg ${message.authorClerkId === user.id ? 'bg-blue-600' : 'bg-gray-700'}`}>
+                      <div className="flex items-center justify-between mb-1">
+                          <p className="text-sm font-bold">{message.authorName}</p>
+                          <p className="text-xs text-gray-400 ml-2">{message.createdAt && format(message.createdAt.toDate(), 'p')}</p>
+                      </div>
+                      {editingMessage === message.id ? (
+                        <>
+                          <input 
+                            type="text" 
+                            value={editedContent}
+                            onChange={(e) => setEditedContent(e.target.value)}
+                            className="bg-gray-600 p-1 rounded"
+                          />
+                          <button onClick={() => handleUpdateMessage(message.id)}><MdCheck /></button>
+                        </>
+                      ) : (
+                        <p>{message.content}</p>
+                      )}
+                       <div className="flex items-center mt-1">
+                        {Object.entries(reactions[message.id] || {}).map(([emoji, data]) => (
+                            <div key={emoji} className="flex items-center mr-2 bg-gray-600 rounded-full px-2 py-1">
+                                <span>{emoji}</span>
+                                <span className="text-xs ml-1">{data.count}</span>
                             </div>
-                        )}
-                        {message.authorEmail !== user?.primaryEmailAddress?.emailAddress && (
-                            <button onClick={() => handleTip(message.authorClerkId)} className="ml-4 p-1 bg-yellow-500 rounded-full hover:bg-yellow-600 transition-colors" disabled={tipping}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M10 3.5a.5.5 0 01.5.5v1a.5.5 0 01-1 0v-1a.5.5 0 01.5-.5zM10 6.5a.5.5 0 01.5.5v1a.5.5 0 01-1 0v-1a.5.5 0 01.5-.5zM10 9.5a.5.5 0 01.5.5v1a.5.5 0 01-1 0v-1a.5.5 0 01.5-.5z" />
-                                    <path fillRule="evenodd" d="M5 2a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H5zm10 14H5V4h10v12z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                        )}
+                        ))}
+                      </div>
+                      {message.authorClerkId === user.id && (
+                        <div className="relative group">
+                          <button className="absolute -top-4 right-0 p-1 rounded-full bg-gray-600 opacity-0 group-hover:opacity-100"><MdMoreVert /></button>
+                          <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10 hidden group-hover:block">
+                              <a href="#" onClick={() => { setEditingMessage(message.id); setEditedContent(message.content);}} className="block px-4 py-2 text-sm text-white hover:bg-gray-700">Edit</a>
+                              <a href="#" onClick={() => handleDeleteMessage(message.id)} className="block px-4 py-2 text-sm text-white hover:bg-gray-700">Delete</a>
+                          </div>
+                        </div>
+                      )}
+                      <button onClick={() => handleReaction(message.id, '👍')}><FaSmile /></button>
                     </div>
-                </div>
-            ))}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
-          <div className="h-6">
-            {tipping && <p className="text-yellow-500">Processing tip...</p>}
-            {typingUsers.length > 0 && (
-              <p className="text-gray-400 text-sm italic">
-                {typingUsers.map(u => u.name).join(', ')} {typingUsers.length === 1 ? 'is' : 'are'} typing...
-              </p>
-            )}
+            <footer className="bg-gray-800 p-4 border-t border-gray-700">
+              <form onSubmit={handleSendMessage} className="flex items-center">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={handleTyping}
+                  placeholder="Type a message..."
+                  className="flex-1 p-2 rounded-lg bg-gray-700 focus:outline-none"
+                />
+                <button type="submit" className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 ml-2" disabled={isPending}>
+                  <MdSend />
+                </button>
+              </form>
+            </footer>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <p>Select a conversation to start chatting.</p>
           </div>
-          <div className="mt-auto">
-            <form onSubmit={handleSendMessage}>
-              <input
-                type="text"
-                placeholder="Type a message..."
-                value={newMessage}
-                onChange={handleTyping}
-                className="w-full p-3 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-                disabled={isPending || selectedConversation === null}
-              />
-            </form>
-          </div>
-        </main>
-      </div>
+        )}
+      </main>
     </div>
   );
 };
