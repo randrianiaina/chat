@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useTransition } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { collection, query, where, onSnapshot, orderBy, serverTimestamp, set, ref, onDisconnect } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, serverTimestamp } from 'firebase/firestore';
+import { ref, set, onDisconnect, serverTimestamp as databaseServerTimestamp } from 'firebase/database';
 import { db, rtdb } from '@/lib/firebase';
 import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction, updateMessage, deleteMessage } from '@/app/actions';
 import { format } from 'date-fns';
@@ -89,12 +90,12 @@ const ChatPage = () => {
     const connect = () => {
         const isOnlineForDatabase = {
             online: true,
-            lastActive: serverTimestamp(),
+            lastActive: databaseServerTimestamp(),
         };
 
         set(userStatusRef, isOnlineForDatabase);
 
-        onDisconnect(userStatusRef).set({ online: false, lastActive: serverTimestamp() });
+        onDisconnect(userStatusRef).set({ online: false, lastActive: databaseServerTimestamp() });
     };
 
     connect();
