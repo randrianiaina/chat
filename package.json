@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.9",
+    "@neondatabase/serverless": "^1.0.1",
     "@stripe/stripe-js": "^7.9.0",
+    "date-fns": "^4.1.0",
     "drizzle-kit": "^0.18.1",
     "drizzle-orm": "^0.44.5",
     "emoji-picker-react": "^4.13.3",
@@ -20,6 +22,7 @@
     "postgres": "^3.4.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-icons": "^5.5.0",
     "stripe": "^18.5.0",
     "tsx": "^4.20.5"
   },
