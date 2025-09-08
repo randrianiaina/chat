@@ -433,3 +433,17 @@ info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/d
 [debug] [2025-09-08T09:42:10.862Z] > authorizing via signed-in user (menja.herizo@gmail.com)
 [debug] [2025-09-08T09:42:10.881Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/only-texto/services/ 200
 [debug] [2025-09-08T09:42:10.882Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/only-texto/services/ [omitted]
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-09-08T09:53:29.642Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-09-08T09:53:29.642Z] > authorizing via signed-in user (menja.herizo@gmail.com)
+[debug] [2025-09-08T09:53:29.649Z] Checked if tokens are valid: true, expires at: 1757328128900
+[debug] [2025-09-08T09:53:29.649Z] Checked if tokens are valid: true, expires at: 1757328128900
+[debug] [2025-09-08T09:53:29.662Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps pageSize=100
+[debug] [2025-09-08T09:53:29.892Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps 200
+[debug] [2025-09-08T09:53:29.892Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/only-texto/webApps {"apps":[{"name":"projects/only-texto/webApps/1:998617720537:web:3337ca415d20dc43d600c8","appId":"1:998617720537:web:3337ca415d20dc43d600c8","displayName":"chat","projectId":"only-texto","webId":"NjVmYjQwZDMtOGIzYy00YzRkLTk1OGItOGVhMGRmNDJkMTkx","apiKeyId":"85318a60-58e9-4ca0-acc1-a3d86b79baf1","state":"ACTIVE","expireTime":"1970-01-01T00:00:00Z","etag":"1_c6d61970-948d-4b58-b338-bd974e9131ab"},{"name":"projects/only-texto/webApps/1:998617720537:web:92e952a78d9fa575d600c8","appId":"1:998617720537:web:92e952a78d9fa575d600c8","displayName":"only-texto","projectId":"only-texto","webId":"ZDNmMmY5OWItOTFkYy00ZDFlLTlhZmQtMjc5YTE1NmY4MGQz","apiKeyId":"85318a60-58e9-4ca0-acc1-a3d86b79baf1","state":"ACTIVE","expireTime":"1970-01-01T00:00:00Z","etag":"1_6e448e3a-94cb-4838-a362-1b1bc9518470"}]}
+[debug] [2025-09-08T09:53:29.893Z] Checked if tokens are valid: true, expires at: 1757328128900
+[debug] [2025-09-08T09:53:29.893Z] Checked if tokens are valid: true, expires at: 1757328128900
+[debug] [2025-09-08T09:53:29.894Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:3337ca415d20dc43d600c8/config [none]
+[debug] [2025-09-08T09:53:30.455Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:3337ca415d20dc43d600c8/config 200
+[debug] [2025-09-08T09:53:30.455Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:998617720537:web:3337ca415d20dc43d600c8/config {"projectId":"only-texto","appId":"1:998617720537:web:3337ca415d20dc43d600c8","storageBucket":"only-texto.firebasestorage.app","apiKey":"AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU","authDomain":"only-texto.firebaseapp.com","messagingSenderId":"998617720537"}
