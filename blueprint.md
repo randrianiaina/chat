@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the features and design of the real-time chat application. The application allows users to sign in, create conversations, and chat with each other in real-time. It also includes features like typing indicators and user presence.
+This document outlines the features and design of the real-time chat application. The application allows users to sign in, create conversations, and chat with each other in real-time. It also includes features like typing indicators, user presence, tipping, and message reactions.
 
 ## Features
 
@@ -12,6 +12,7 @@ This document outlines the features and design of the real-time chat application
 *   **Typing Indicators:** Users can see when another user is typing a message.
 *   **User Presence:** Users can see whether other users are online or offline.
 *   **Tipping:** Users can send tips to each other using Stripe.
+*   **Message Reactions:** Users can react to messages with emojis, and the reactions are updated in real-time.
 
 ## Design
 
@@ -34,11 +35,11 @@ This plan outlines the implementation of a tipping feature that allows users to 
 5.  **Success and Cancel Pages:** Create pages to handle successful and canceled payments.
 6.  **UI Feedback:** Provide visual feedback in the UI after a successful tip.
 
-## Current Plan: Message Reactions
+## Completed: Message Reactions
 
 ### Overview
 
-This plan outlines the implementation of a message reaction feature that allows users to react to messages with emojis. The feature will be implemented using Firestore to store and sync reactions in real-time.
+This plan outlines the implementation of a message reaction feature that allows users to react to messages with emojis. The feature has been implemented using Firestore to store and sync reactions in real-time.
 
 ### Steps
 

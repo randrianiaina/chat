@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState, useTransition, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { sendMessage, createConversation as createConversationAction, updateTypingStatus } from '../actions';
+import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction } from '../actions';
 import { collection, onSnapshot, query, where, orderBy, doc } from "firebase/firestore";
 import { db, rtdb } from '@/lib/firebase';
 import { ref, onValue, onDisconnect, set, serverTimestamp } from 'firebase/database';
 import { loadStripe } from '@stripe/stripe-js';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
 
@@ -24,6 +25,13 @@ interface Message {
   authorName: string;
   authorEmail: string;
   authorClerkId: string;
+}
+
+interface Reaction {
+    [emoji: string]: {
+        count: number;
+        users: { [clerkId: string]: string };
+    };
 }
 
 interface TypingUser {
@@ -47,6 +55,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState<string | null>(null);
+  const [reactions, setReactions] = useState<{ [messageId: string]: Reaction }>({});
 
   const [newMessage, setNewMessage] = useState('');
   const [isPending, startTransition] = useTransition();
@@ -60,6 +69,7 @@ const ChatPage = () => {
 
   const [presence, setPresence] = useState<Presence>({});
   const [tipping, setTipping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null);
 
   const fetchConversations = async () => {
     try {
@@ -114,11 +124,31 @@ const ChatPage = () => {
 
     const unsubscribeMessages = onSnapshot(messagesQuery, (querySnapshot) => {
       const newMessages: Message[] = [];
+      const messageIds: string[] = [];
       querySnapshot.forEach((doc) => {
-        newMessages.push({ id: doc.id, ...doc.data() } as Message);
+        const message = { id: doc.id, ...doc.data() } as Message;
+        newMessages.push(message);
+        messageIds.push(message.id);
       });
       setMessages(newMessages);
       setMessagesLoading(false);
+
+      if (messageIds.length > 0) {
+        const reactionsQuery = query(
+          collection(db, "reactions"),
+          where("__name__", "in", messageIds)
+        );
+
+        const unsubscribeReactions = onSnapshot(reactionsQuery, (snapshot) => {
+          const newReactions: { [messageId: string]: Reaction } = {};
+          snapshot.forEach((doc) => {
+            newReactions[doc.id] = doc.data() as Reaction;
+          });
+          setReactions(newReactions);
+        });
+
+        return () => unsubscribeReactions();
+      }
     }, (err) => {
       console.error(err);
       setMessagesError('Failed to subscribe to messages');
@@ -222,6 +252,17 @@ const ChatPage = () => {
       setTipping(false);
     }
   };
+  
+  const onEmojiClick = (emojiData: EmojiClickData, messageId: string) => {
+    startTransition(async () => {
+        try {
+            await addReaction(messageId, emojiData.emoji);
+        } catch (error) {
+            console.error("Failed to add reaction:", error);
+        }
+    });
+    setShowEmojiPicker(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
@@ -270,14 +311,32 @@ const ChatPage = () => {
             {messagesError && <p className="text-red-500">{messagesError}</p>}
             {messages.map((message) => (
                 <div key={message.id} className={`flex items-start ${message.authorEmail === user?.primaryEmailAddress?.emailAddress ? 'justify-end' : ''}`}>
-                    <div className={`${message.authorEmail === user?.primaryEmailAddress?.emailAddress ? 'bg-blue-600' : 'bg-gray-700'} p-3 rounded-lg flex items-center`}>
-                        <div>
-                            <div className="flex items-center">
-                                <p className="font-semibold mr-2">{message.authorName}</p>
-                                <span className={`w-2 h-2 rounded-full ${presence[message.authorClerkId] && presence[message.authorClerkId].online ? 'bg-green-500' : 'bg-gray-500'}`}></span>
-                            </div>
-                            <p>{message.content}</p>
-                            <p className="text-xs text-gray-400 mt-1">{message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}</p>
+                    <div className={`${message.authorEmail === user?.primaryEmailAddress?.emailAddress ? 'bg-blue-600' : 'bg-gray-700'} p-3 rounded-lg flex flex-col`}>
+                        <div className="flex items-center">
+                            <p className="font-semibold mr-2">{message.authorName}</p>
+                            <span className={`w-2 h-2 rounded-full ${presence[message.authorClerkId] && presence[message.authorClerkId].online ? 'bg-green-500' : 'bg-gray-500'}`}></span>
+                        </div>
+                        <p>{message.content}</p>
+                        <p className="text-xs text-gray-400 mt-1">{message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}</p>
+                        <div className="flex items-center mt-2">
+                            {reactions[message.id] && Object.entries(reactions[message.id]).map(([emoji, reaction]) => (
+                                <div key={emoji} className="flex items-center mr-2 bg-gray-600 rounded-full px-2 py-1">
+                                    <span>{emoji}</span>
+                                    <span className="text-xs ml-1">{reaction.count}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="relative">
+                            <button onClick={() => setShowEmojiPicker(showEmojiPicker === message.id ? null : message.id)} className="ml-2 p-1 rounded-full hover:bg-gray-600 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a.5.5 0 01.708 0 4 4 0 01-5.656 0 .5.5 0 01.708-.707 3 3 0 004.242 0 .5.5 0 010-.707z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                            {showEmojiPicker === message.id && (
+                                <div className="absolute z-10 bottom-full right-0">
+                                    <EmojiPicker onEmojiClick={(emojiData) => onEmojiClick(emojiData, message.id)} />
+                                </div>
+                            )}
                         </div>
                         {message.authorEmail !== user?.primaryEmailAddress?.emailAddress && (
                             <button onClick={() => handleTip(message.authorClerkId)} className="ml-4 p-1 bg-yellow-500 rounded-full hover:bg-yellow-600 transition-colors" disabled={tipping}>

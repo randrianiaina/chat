@@ -1,7 +1,7 @@
 'use server';
 
 import { db as firestoreDb } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField, runTransaction } from "firebase/firestore"; 
 import { auth } from '@clerk/nextjs/server';
 import { db as drizzleDb } from '@/lib/firebase'; // Corrected import
 import { users, conversations as conversationsTable } from '@/lib/db/schema';
@@ -91,3 +91,72 @@ export async function updateTypingStatus(conversationId: number, isTyping: boole
         });
     }
 }
+
+export async function addReaction(messageId: string, emoji: string) {
+    const { userId: clerkId } = auth();
+    if (!clerkId) {
+        throw new Error('User not authenticated');
+    }
+
+    const [user] = await drizzleDb.select().from(users).where(eq(users.clerkId, clerkId));
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const reactionRef = doc(firestoreDb, "reactions", messageId);
+
+    await runTransaction(firestoreDb, async (transaction) => {
+        const reactionDoc = await transaction.get(reactionRef);
+
+        if (!reactionDoc.exists()) {
+            transaction.set(reactionRef, { 
+                [emoji]: { 
+                    count: 1,
+                    users: { [clerkId]: user.name }
+                }
+            });
+        } else {
+            const reactions = reactionDoc.data();
+            const existingReaction = reactions[emoji];
+
+            if (existingReaction) {
+                const userHasReacted = existingReaction.users[clerkId];
+
+                if (userHasReacted) {
+                    // User is removing their reaction
+                    const newCount = existingReaction.count - 1;
+                    const newUsers = { ...existingReaction.users };
+                    delete newUsers[clerkId];
+
+                    if (newCount === 0) {
+                        transaction.update(reactionRef, { [emoji]: deleteField() });
+                    } else {
+                        transaction.update(reactionRef, { 
+                            [emoji]: { 
+                                count: newCount, 
+                                users: newUsers 
+                            }
+                        });
+                    }
+                } else {
+                    // User is adding a new reaction
+                    transaction.update(reactionRef, {
+                        [emoji]: {
+                            count: existingReaction.count + 1,
+                            users: { ...existingReaction.users, [clerkId]: user.name }
+                        }
+                    });
+                }
+            } else {
+                // Emoji does not exist, so add it
+                transaction.update(reactionRef, {
+                    [emoji]: {
+                        count: 1,
+                        users: { [clerkId]: user.name }
+                    }
+                });
+            }
+        }
+    });
+}
+
