@@ -4,7 +4,7 @@ import { db as firestoreDb } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField, runTransaction, deleteDoc } from "firebase/firestore"; 
 import { auth } from '@clerk/nextjs/server';
 import { db as drizzleDb } from '@/lib/firebase'; // Corrected import
-import { users, conversations as conversationsTable } from '@/lib/db/schema';
+import { users, conversations as conversationsTable, conversationParticipants } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
@@ -49,8 +49,13 @@ export async function createConversation(name: string) {
 
     const [newConversation] = await drizzleDb
         .insert(conversationsTable)
-        .values({ name, creatorId: user.id })
+        .values({ name })
         .returning();
+
+    await drizzleDb.insert(conversationParticipants).values({
+        conversationId: newConversation.id,
+        userId: user.id,
+    });
 
     revalidatePath('/api/conversations');
 
