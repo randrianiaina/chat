@@ -21,6 +21,21 @@ This document outlines the features and design of the real-time chat application
 *   **Responsive Layout:** The layout is responsive and works well on both desktop and mobile devices.
 *   **Interactive Elements:** The UI includes interactive elements like buttons, input fields, and presence indicators to enhance the user experience.
 
+## Completed: Debugging Conversation Creation
+
+### Overview
+
+This plan documents the process of debugging and fixing a critical issue where authenticated users were unable to create or view conversations. The issue involved a cascade of configuration problems, runtime errors, and build errors.
+
+### Steps
+
+1.  **Fix Configuration:** Moved hardcoded Firebase credentials from `src/lib/firebase.ts` to environment variables in `.env.local` to resolve warnings and improve security.
+2.  **Fix Runtime Error:** Identified and fixed a JavaScript error on the chat page (`/app/chat/page.tsx`). The code was trying to access a `creatorId` property that doesn't exist on conversation objects, which blocked rendering. The UI element causing the error was removed.
+3.  **Fix Build Errors:**
+    *   Resolved a `duplicate export` error in `src/lib/firebase.ts` where `db` was exported twice.
+    *   Corrected the database connection imports in `src/app/actions.ts` to match the fix.
+    *   Installed multiple missing npm packages (`@neondatabase/serverless`, `date-fns`, `react-icons`) that were causing `Module not found` build errors.
+
 ## Completed: Tipping Feature
 
 ### Overview
