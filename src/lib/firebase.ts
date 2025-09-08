@@ -2,15 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
-// TODO: Replace with your actual Firebase configuration
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCQ4HyKQo0x_nRS1x_6_9l5OYDerHmhZeU",
+  authDomain: "only-texto.firebaseapp.com",
+  projectId: "only-texto",
+  storageBucket: "only-texto.firebasestorage.app",
+  messagingSenderId: "998617720537",
+  appId: "1:998617720537:web:3337ca415d20dc43d600c8",
+  databaseURL: "https://only-texto.firebaseio.com"
 };
 
 const app = initializeApp(firebaseConfig);
