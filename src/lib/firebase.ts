@@ -28,4 +28,4 @@ const rtdb = getDatabase(app);
 const sql = neon(process.env.POSTGRES_URL!);
 const dbDrizzle = drizzle(sql);
 
-export { db, rtdb, dbDrizzle as db };
+export { db, rtdb, dbDrizzle };

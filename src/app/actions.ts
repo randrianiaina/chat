@@ -1,9 +1,8 @@
 'use server';
 
-import { db as firestoreDb } from '@/lib/firebase';
+import { db, dbDrizzle } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField, runTransaction, deleteDoc } from "firebase/firestore"; 
 import { auth } from '@clerk/nextjs/server';
-import { db as drizzleDb } from '@/lib/firebase'; // Corrected import
 import { users, conversations as conversationsTable, conversationParticipants } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
@@ -15,13 +14,13 @@ export async function sendMessage(conversationId: number, content: string) {
     throw new Error('User not authenticated');
   }
 
-  const [user] = await drizzleDb.select().from(users).where(eq(users.clerkId, clerkId));
+  const [user] = await dbDrizzle.select().from(users).where(eq(users.clerkId, clerkId));
 
   if (!user) {
     throw new Error('User not found');
   }
 
-  await addDoc(collection(firestoreDb, "messages"), {
+  await addDoc(collection(db, "messages"), {
     conversationId: conversationId,
     content: content,
     createdAt: serverTimestamp(),
@@ -41,18 +40,18 @@ export async function createConversation(name: string) {
         throw new Error('User not authenticated');
     }
 
-    const [user] = await drizzleDb.select().from(users).where(eq(users.clerkId, clerkId));
+    const [user] = await dbDrizzle.select().from(users).where(eq(users.clerkId, clerkId));
 
     if (!user) {
         throw new Error('User not found');
     }
 
-    const [newConversation] = await drizzleDb
+    const [newConversation] = await dbDrizzle
         .insert(conversationsTable)
         .values({ name })
         .returning();
 
-    await drizzleDb.insert(conversationParticipants).values({
+    await dbDrizzle.insert(conversationParticipants).values({
         conversationId: newConversation.id,
         userId: user.id,
     });
@@ -70,13 +69,13 @@ export async function updateTypingStatus(conversationId: number, isTyping: boole
         return;
     }
 
-    const [user] = await drizzleDb.select().from(users).where(eq(users.clerkId, clerkId));
+    const [user] = await dbDrizzle.select().from(users).where(eq(users.clerkId, clerkId));
 
     if (!user) {
         return;
     }
 
-    const typingRef = doc(firestoreDb, 'typing', conversationId.toString());
+    const typingRef = doc(db, 'typing', conversationId.toString());
 
     if (isTyping) {
         await setDoc(typingRef, {
@@ -103,14 +102,14 @@ export async function addReaction(messageId: string, emoji: string) {
         throw new Error('User not authenticated');
     }
 
-    const [user] = await drizzleDb.select().from(users).where(eq(users.clerkId, clerkId));
+    const [user] = await dbDrizzle.select().from(users).where(eq(users.clerkId, clerkId));
     if (!user) {
         throw new Error('User not found');
     }
 
-    const reactionRef = doc(firestoreDb, "reactions", messageId);
+    const reactionRef = doc(db, "reactions", messageId);
 
-    await runTransaction(firestoreDb, async (transaction) => {
+    await runTransaction(db, async (transaction) => {
         const reactionDoc = await transaction.get(reactionRef);
 
         if (!reactionDoc.exists()) {
@@ -171,7 +170,7 @@ export async function updateMessage(messageId: string, content: string) {
         throw new Error('User not authenticated');
     }
 
-    const messageRef = doc(firestoreDb, "messages", messageId);
+    const messageRef = doc(db, "messages", messageId);
     // You might want to add a check to ensure the user is the author of the message
     await updateDoc(messageRef, { content });
 }
@@ -182,7 +181,7 @@ export async function deleteMessage(messageId: string) {
         throw new Error('User not authenticated');
     }
 
-    const messageRef = doc(firestoreDb, "messages", messageId);
+    const messageRef = doc(db, "messages", messageId);
     // You might want to add a check to ensure the user is the author of the message
     await deleteDoc(messageRef);
 }
