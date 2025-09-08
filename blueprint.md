@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the features and design of the real-time chat application. The application allows users to sign in, create conversations, and chat with each other in real-time. It also includes features like typing indicators, user presence, tipping, and message reactions.
+This document outlines the features and design of the real-time chat application. The application allows users to sign in, create conversations, and chat with each other in real-time. It also includes features like typing indicators, user presence, tipping, message reactions, and message editing/deleting.
 
 ## Features
 
@@ -13,6 +13,7 @@ This document outlines the features and design of the real-time chat application
 *   **User Presence:** Users can see whether other users are online or offline.
 *   **Tipping:** Users can send tips to each other using Stripe.
 *   **Message Reactions:** Users can react to messages with emojis, and the reactions are updated in real-time.
+*   **Edit/Delete Messages:** Users can edit or delete their own messages.
 
 ## Design
 
@@ -48,3 +49,17 @@ This plan outlines the implementation of a message reaction feature that allows 
 3.  **Save Reaction:** Save the selected reaction to Firestore, associating it with the message.
 4.  **Display Reactions:** Display the reactions on each message, showing the emojis and the count of each reaction.
 5.  **Real-time Updates:** Ensure that reactions are updated in real-time for all users in the conversation.
+
+## Completed: Edit and Delete Messages
+
+### Overview
+
+This plan outlines the implementation of message editing and deletion features. Users can edit the content of their own messages or delete them entirely.
+
+### Steps
+
+1.  **Edit/Delete Buttons:** Add "Edit" and "Delete" buttons to each message belonging to the current user.
+2.  **Editing UI:** Create a user interface for editing message content, such as displaying an input field with the current message content.
+3.  **Server Actions:** Create server actions (`updateMessage` and `deleteMessage`) to handle updating and deleting messages in Firestore.
+4.  **Delete Confirmation:** Implement a confirmation before deleting a message to prevent accidental deletions.
+5.  **Real-time Updates:** Ensure that edited and deleted messages are updated in real-time for all users in the conversation.

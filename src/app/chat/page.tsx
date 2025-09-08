@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useTransition, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction } from '../actions';
+import { sendMessage, createConversation as createConversationAction, updateTypingStatus, addReaction, updateMessage, deleteMessage } from '../actions';
 import { collection, onSnapshot, query, where, orderBy, doc } from "firebase/firestore";
 import { db, rtdb } from '@/lib/firebase';
 import { ref, onValue, onDisconnect, set, serverTimestamp } from 'firebase/database';
@@ -70,6 +70,8 @@ const ChatPage = () => {
   const [presence, setPresence] = useState<Presence>({});
   const [tipping, setTipping] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null);
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState('');
 
   const fetchConversations = async () => {
     try {
@@ -264,6 +266,30 @@ const ChatPage = () => {
     setShowEmojiPicker(null);
   };
 
+  const handleUpdateMessage = (messageId: string) => {
+    startTransition(async () => {
+        try {
+            await updateMessage(messageId, editingContent);
+            setEditingMessageId(null);
+            setEditingContent('');
+        } catch (error) {
+            console.error('Failed to update message:', error);
+        }
+    });
+  };
+
+  const handleDeleteMessage = (messageId: string) => {
+    if(window.confirm('Are you sure you want to delete this message?')){
+        startTransition(async () => {
+            try {
+                await deleteMessage(messageId);
+            } catch (error) {
+                console.error('Failed to delete message:', error);
+            }
+        });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <div className="flex flex-1">
@@ -316,7 +342,22 @@ const ChatPage = () => {
                             <p className="font-semibold mr-2">{message.authorName}</p>
                             <span className={`w-2 h-2 rounded-full ${presence[message.authorClerkId] && presence[message.authorClerkId].online ? 'bg-green-500' : 'bg-gray-500'}`}></span>
                         </div>
-                        <p>{message.content}</p>
+                        {editingMessageId === message.id ? (
+                            <input 
+                                type="text"
+                                value={editingContent}
+                                onChange={(e) => setEditingContent(e.target.value)}
+                                onBlur={() => handleUpdateMessage(message.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleUpdateMessage(message.id);
+                                    if (e.key === 'Escape') setEditingMessageId(null);
+                                }}
+                                className="bg-gray-800 border-b border-gray-500 focus:outline-none"
+                                autoFocus
+                            />
+                        ) : (
+                            <p>{message.content}</p>
+                        )}
                         <p className="text-xs text-gray-400 mt-1">{message.createdAt ? new Date(message.createdAt).toLocaleTimeString() : ''}</p>
                         <div className="flex items-center mt-2">
                             {reactions[message.id] && Object.entries(reactions[message.id]).map(([emoji, reaction]) => (
@@ -338,6 +379,12 @@ const ChatPage = () => {
                                 </div>
                             )}
                         </div>
+                        {message.authorClerkId === user?.id && (
+                            <div className="flex items-center">
+                                <button onClick={() => { setEditingMessageId(message.id); setEditingContent(message.content); }} className="text-xs text-gray-400 hover:text-white mr-2">Edit</button>
+                                <button onClick={() => handleDeleteMessage(message.id)} className="text-xs text-red-400 hover:text-red-500">Delete</button>
+                            </div>
+                        )}
                         {message.authorEmail !== user?.primaryEmailAddress?.emailAddress && (
                             <button onClick={() => handleTip(message.authorClerkId)} className="ml-4 p-1 bg-yellow-500 rounded-full hover:bg-yellow-600 transition-colors" disabled={tipping}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">

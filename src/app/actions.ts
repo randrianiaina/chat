@@ -1,7 +1,7 @@
 'use server';
 
 import { db as firestoreDb } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField, runTransaction } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, doc, setDoc, updateDoc, deleteField, runTransaction, deleteDoc } from "firebase/firestore"; 
 import { auth } from '@clerk/nextjs/server';
 import { db as drizzleDb } from '@/lib/firebase'; // Corrected import
 import { users, conversations as conversationsTable } from '@/lib/db/schema';
@@ -160,3 +160,24 @@ export async function addReaction(messageId: string, emoji: string) {
     });
 }
 
+export async function updateMessage(messageId: string, content: string) {
+    const { userId: clerkId } = auth();
+    if (!clerkId) {
+        throw new Error('User not authenticated');
+    }
+
+    const messageRef = doc(firestoreDb, "messages", messageId);
+    // You might want to add a check to ensure the user is the author of the message
+    await updateDoc(messageRef, { content });
+}
+
+export async function deleteMessage(messageId: string) {
+    const { userId: clerkId } = auth();
+    if (!clerkId) {
+        throw new Error('User not authenticated');
+    }
+
+    const messageRef = doc(firestoreDb, "messages", messageId);
+    // You might want to add a check to ensure the user is the author of the message
+    await deleteDoc(messageRef);
+}
