@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +21,18 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">AI Chat</h1>
-            <div>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="text-2xl font-bold">AI Chat</Link>
+              <Link href="/portfolio" className="hover:text-gray-300">Portfolio</Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <SignedIn>
+                <Link href="/portfolio/submit" className="hover:text-gray-300">Soumettre un projet</Link>
+                <UserButton />
+              </SignedIn>
               <SignedOut>
                 <SignInButton />
               </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
             </div>
           </header>
           <main className="p-4">{children}</main>
